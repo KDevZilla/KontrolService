@@ -55,6 +55,12 @@
   <ItemGroup>
     <Compile Include="CallBack.cs" />
     <Compile Include="cKontrolService.cs" />
+    <Compile Include="FormControlService.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormControlService.Designer.cs">
+      <DependentUpon>FormControlService.cs</DependentUpon>
+    </Compile>
     <Compile Include="KontrolServiceMachine.cs" />
     <Compile Include="ExtendBackGroundWorker.cs">
       <SubType>Component</SubType>
@@ -120,6 +126,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormControlService.resx">
+      <DependentUpon>FormControlService.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmChooseServices.resx">
       <DependentUpon>frmChooseServices.cs</DependentUpon>

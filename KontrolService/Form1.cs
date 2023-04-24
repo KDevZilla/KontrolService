@@ -511,7 +511,7 @@ namespace KontrolService
         {
             Button b = button7;
 
-              if(IsLock)
+            if(IsLock)
             {
                 EnableButton(b, false);
                 EnableListVIew(this.listView1, false);

@@ -17,9 +17,10 @@ namespace KontrolService
             Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new frmTestService());
             //Application.Run(new frmHowToRunAppAsAdmin());
-          //  Application.Run(new TestThread());
+            //  Application.Run(new TestThread());
 
-             Application.Run(new Form1());
+            Application.Run(new FormControlService());
+            // Application.Run(new Form1());
             //Application.Run(new Form2());
             //Application.Run(new frmChooseServices());
 
