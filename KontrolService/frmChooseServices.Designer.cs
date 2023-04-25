@@ -36,13 +36,14 @@
             // 
             // btnChooseService
             // 
+            this.btnChooseService.BackColor = System.Drawing.SystemColors.Control;
             this.btnChooseService.Location = new System.Drawing.Point(786, 463);
             this.btnChooseService.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnChooseService.Name = "btnChooseService";
             this.btnChooseService.Size = new System.Drawing.Size(134, 41);
             this.btnChooseService.TabIndex = 0;
             this.btnChooseService.Text = "Choose";
-            this.btnChooseService.UseVisualStyleBackColor = true;
+            this.btnChooseService.UseVisualStyleBackColor = false;
             this.btnChooseService.Click += new System.EventHandler(this.button1_Click);
             // 
             // listView1
@@ -69,13 +70,14 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.BackColor = System.Drawing.SystemColors.Control;
             this.btnCancel.Location = new System.Drawing.Point(653, 463);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(125, 41);
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.UseVisualStyleBackColor = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // frmChooseServices

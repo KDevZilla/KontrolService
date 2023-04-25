@@ -32,9 +32,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.listView1 = new KontrolService.Extendlistview();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnRestartService = new System.Windows.Forms.Button();
+            this.btnStartService = new System.Windows.Forms.Button();
+            this.btnStopService = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadServiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +69,7 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(1045, 183);
             this.textBox1.TabIndex = 13;
             // 
@@ -85,35 +86,38 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             // 
-            // button8
+            // btnRestartService
             // 
-            this.button8.Location = new System.Drawing.Point(295, 27);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(173, 39);
-            this.button8.TabIndex = 21;
-            this.button8.Text = "Restart Service";
-            this.button8.UseVisualStyleBackColor = true;
+            this.btnRestartService.BackColor = System.Drawing.SystemColors.Control;
+            this.btnRestartService.Location = new System.Drawing.Point(295, 27);
+            this.btnRestartService.Name = "btnRestartService";
+            this.btnRestartService.Size = new System.Drawing.Size(173, 39);
+            this.btnRestartService.TabIndex = 21;
+            this.btnRestartService.Text = "Restart Service";
+            this.btnRestartService.UseVisualStyleBackColor = false;
+            this.btnRestartService.Click += new System.EventHandler(this.btnRestartService_Click);
             // 
-            // button7
+            // btnStartService
             // 
-            this.button7.Location = new System.Drawing.Point(12, 27);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(121, 39);
-            this.button7.TabIndex = 20;
-            this.button7.Text = "Start Service";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.btnStartService.BackColor = System.Drawing.SystemColors.Control;
+            this.btnStartService.Location = new System.Drawing.Point(12, 27);
+            this.btnStartService.Name = "btnStartService";
+            this.btnStartService.Size = new System.Drawing.Size(121, 39);
+            this.btnStartService.TabIndex = 20;
+            this.btnStartService.Text = "Start Service";
+            this.btnStartService.UseVisualStyleBackColor = false;
+            this.btnStartService.Click += new System.EventHandler(this.button7_Click);
             // 
-            // button2
+            // btnStopService
             // 
-            this.button2.BackColor = System.Drawing.SystemColors.Control;
-            this.button2.Location = new System.Drawing.Point(139, 27);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(150, 39);
-            this.button2.TabIndex = 17;
-            this.button2.Text = "Stop Service";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnStopService.BackColor = System.Drawing.SystemColors.Control;
+            this.btnStopService.Location = new System.Drawing.Point(139, 27);
+            this.btnStopService.Name = "btnStopService";
+            this.btnStopService.Size = new System.Drawing.Size(150, 39);
+            this.btnStopService.TabIndex = 17;
+            this.btnStopService.Text = "Stop Service";
+            this.btnStopService.UseVisualStyleBackColor = false;
+            this.btnStopService.Click += new System.EventHandler(this.button2_Click);
             // 
             // menuStrip1
             // 
@@ -175,9 +179,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1069, 618);
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnRestartService);
+            this.Controls.Add(this.btnStartService);
+            this.Controls.Add(this.btnStopService);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
@@ -202,9 +206,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private Extendlistview listView1;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnRestartService;
+        private System.Windows.Forms.Button btnStartService;
+        private System.Windows.Forms.Button btnStopService;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadServiceToolStripMenuItem;

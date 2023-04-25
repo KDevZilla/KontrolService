@@ -522,7 +522,12 @@ namespace KontrolService
          //   Macro MStart = getCheckedItem(true);
             StartCheckedServices();
             //   RunMacroUsingTaskV2(MStart);
-            if(timerCheckThread != null)
+            StartTimerEnableButton();
+            Log("End Start Checked Services");
+        }
+        private void StartTimerEnableButton()
+        {
+            if (timerCheckThread != null)
             {
                 timerCheckThread.Enabled = false;
                 timerCheckThread.Elapsed -= TimerCheckThread_Elapsed;
@@ -532,15 +537,15 @@ namespace KontrolService
             timerCheckThread.Elapsed += TimerCheckThread_Elapsed;
             timerCheckThread.Interval = 1000;
             timerCheckThread.Enabled = true;
-            Log("End Start Checked Services");
         }
-
         private void TimerCheckThread_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //throw new NotImplementedException();
+            Log("Check if All thread finish");
             CheckToEnableButton();
             if (!HasThreadRunning)
             {
+                Log("=== All thread finished. ===");
                 timerCheckThread.Enabled = false;
                 return;
             }
@@ -729,7 +734,7 @@ namespace KontrolService
 
         private void LockControl(Boolean IsLock)
         {
-            Button b = button7;
+            Button b = btnStartService;
 
             if (IsLock)
             {
@@ -763,6 +768,8 @@ namespace KontrolService
         {
             Log("Begin Stop Checked Services");
             StopCheckedServices();
+            StartTimerEnableButton();
+
             Log("End Stop Checked Services");
         }
 
@@ -848,8 +855,49 @@ namespace KontrolService
             finally
             {
                 // DicThreadhasFinished[sc.Properties.ServiceName] = true;
-                CheckToEnableButton();
+                //CheckToEnableButton();
+                //We do it using timer instead
             }
+        }
+
+        private void btnRestartService_Click(object sender, EventArgs e)
+        {
+            Log("Begin Stop Checked Services");
+            RestartCheckedServices();
+            StartTimerEnableButton();
+
+            Log("End Stop Checked Services");
+        }
+
+        private void RestartCheckedServices()
+        {
+            int i;
+            setCheckedItem();
+            foreach (string str in DicService.Keys)
+            {
+                if (!DicService[str].IsChecked)
+                {
+                    continue;
+                }
+                IServiceAdapter service = DicService[str].service;
+
+                if (ServiceHelper.GetServiceStartMode(str) == enStartMode.Disabled)
+                {
+                    continue;
+                }
+
+                HasThreadRunning = true;
+                Thread t = new Thread(new ParameterizedThreadStart(RestartService));
+                t.Start(service);
+                //service.Stop();
+            }
+            //this.DisplayService();
+        }
+
+        private void RestartService(object obj)
+        {
+            StopService(obj);
+            StartService(obj);
         }
     }
 }
