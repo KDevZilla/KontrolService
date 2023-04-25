@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -30,8 +31,12 @@ namespace KontrolService
         int DisplayNameColOrder = 2;
         int ServiceStatusColOrder = 3;
         int ServiceStatupColOrder = 4;
-
+        private System.Windows.Forms.Timer timer1;
         delegate void UpdateListViewStatusCallBack(String strServiceName, String Status);
+        delegate void LogCallback(string text);
+     //   delegate void UpdateListViewStatusCallBack(String strServiceName, String Status);
+        delegate void EnableButtonCallBack(Button b, Boolean IsEnable);
+        delegate void EnableListViewCallBack(Extendlistview extV, Boolean IsEnable);
 
 
         private void LoadProject(HashSet<String> ServiceSelected)
@@ -478,6 +483,373 @@ namespace KontrolService
             MessageBox.Show($"Project {this.ProjectFile} was saved.");
 
             ShowFileNameOnCaption(this.ProjectFile);
+        }
+
+        private void EnableButton(Button b, Boolean IsEnable)
+        {
+            if (b.InvokeRequired)
+            {
+                EnableButtonCallBack l = new EnableButtonCallBack(EnableButton);
+                this.Invoke(l, new object[] { b, IsEnable });
+            }
+            else
+            {
+                b.Enabled = IsEnable;
+            }
+
+
+        }
+        System.Timers.Timer timerCheckThread = null;
+        private void Log(String str)
+        {
+
+            if (LogObject != null)
+            {
+                LogObject.Log(str);
+                return;
+            }
+
+
+
+
+        }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            EnableButton((Button)sender, false);
+            Log("Begin Start Checked Services");
+
+             setCheckedItem();
+         //   Macro MStart = getCheckedItem(true);
+            StartCheckedServices();
+            //   RunMacroUsingTaskV2(MStart);
+            if(timerCheckThread != null)
+            {
+                timerCheckThread.Enabled = false;
+                timerCheckThread.Elapsed -= TimerCheckThread_Elapsed;
+            }
+            timerCheckThread = new System.Timers.Timer();
+            timerCheckThread.Elapsed -= TimerCheckThread_Elapsed;
+            timerCheckThread.Elapsed += TimerCheckThread_Elapsed;
+            timerCheckThread.Interval = 1000;
+            timerCheckThread.Enabled = true;
+            Log("End Start Checked Services");
+        }
+
+        private void TimerCheckThread_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            //throw new NotImplementedException();
+            CheckToEnableButton();
+            if (!HasThreadRunning)
+            {
+                timerCheckThread.Enabled = false;
+                return;
+            }
+        }
+
+        private void setCheckedItem()
+        {
+            foreach (string serviceName in DicService.Keys)
+            {
+                DicService[serviceName].IsChecked = false;
+            }
+            int i;
+            for (i = 0; i < this.listView1.Items.Count; i++)
+            {
+                if (this.listView1.Items[i].Checked)
+                {
+                    string ItemName = this.listView1.Items[i].SubItems[1].Text;
+                    DicService[ItemName].IsChecked = true;
+                }
+            }
+
+
+        }
+
+        private void StartCheckedServices()
+        {
+            int i;
+
+            //lst.Clear();
+            lstThreadRunning = new List<Thread>();
+            // DicThreadhasFinished.Clear();
+            foreach (string str in DicService.Keys)
+            {
+                if (!DicService[str].IsChecked)
+                {
+                    continue;
+                }
+                IServiceAdapter service = DicService[str].service;
+
+
+                if (service.Properties.Status == ServiceControllerStatus.Running)
+                {
+                    this.Log(str + " Status is alrady running. Program will skip starting.");
+                    continue;
+
+                }
+                if (ServiceHelper.GetServiceStartMode(str) == enStartMode.Disabled)
+                {
+                    this.Log(str + " start mode is disabled. Program will skip starting.");
+                    continue;
+                }
+                //service.Start();
+                HasThreadRunning = true;
+                this.Log("[StartCheckedService] set IsThereAtLeastOneThreadToJoin = true;");
+                // IsThereAtLeastOneThreadToJoin = true;
+                //DicThreadhasFinished.Add(service.Properties.ServiceName, false);
+
+
+                Thread t = new Thread(new ParameterizedThreadStart(StartService));
+                t.Name = service.Properties.ServiceName;
+                lstThreadRunning.Add(t);
+                this.Log("[StartCheckedService] add thread into lst ");
+                t.Start(service);
+
+
+
+                //lst.Add(t);
+
+                // t.Join();
+
+                //service.WaitForStatus (ServiceControllerStatus.Running ,               
+            }
+            this.DisplayServiceV2();
+        }
+        private Macro getCheckedItem(Boolean IsThisMacroForStartService)
+        {
+            Macro.MacroActionType MacroAction = Macro.MacroActionType.Start;
+
+            ServiceAction.ServiceActionenum ServiceAction = KontrolService.ServiceAction.ServiceActionenum.Start;
+
+            if (!IsThisMacroForStartService)
+            {
+                MacroAction = Macro.MacroActionType.Stop;
+                ServiceAction = KontrolService.ServiceAction.ServiceActionenum.Stop;
+            }
+            Macro M = new Macro("StartChecked", MacroAction);
+
+            int i = 0;
+            for (i = 0; i < this.listView1.Items.Count; i++)
+            {
+                if (this.listView1.Items[i].Checked)
+                {
+
+                    string ItemName = this.listView1.Items[i].SubItems[1].Text;
+                    DicService[ItemName].IsChecked = true;
+
+                    M.AddService(ItemName, ServiceAction);
+
+                }
+            }
+            return M;
+
+
+        }
+
+
+
+        private void UpdateService(IServiceAdapter sc)
+        {
+
+            DicService[sc.Properties.ServiceName].service = sc;//ServiceAdapterFactory.Create(sc);
+            UpdateListViewStatus(sc.Properties.ServiceName, sc.Properties.Status.ToString());
+
+        }
+        private void UpdateService(IServiceAdapter sc, String custom)
+        {
+
+            DicService[sc.Properties.ServiceName].service = sc;//ServiceAdapterFactory.Create(sc);
+            UpdateListViewStatus(sc.Properties.ServiceName, custom);
+
+        }
+        private void StartService(object obj)
+        {
+            IServiceAdapter sc = (IServiceAdapter)obj;
+            try
+            {
+                //IServiceAdapter sc = (IServiceAdapter)obj;
+                UpdateService(sc, "Starting");
+                sc.Start();
+
+                UpdateService(sc);
+                this.Log(sc.Properties.ServiceName + " starting");
+                sc.WaitForStatus(ServiceControllerStatus.Running);
+                if (sc.Properties.Status == ServiceControllerStatus.Running)
+                {
+                    this.Log(sc.Properties.ServiceName + " has started");
+                    //DisplayServiceV2();
+                    UpdateService(sc);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Log("StartService :: Exception :: " + ex.Message);
+            }
+            finally
+            {
+                // DicThreadhasFinished[sc.Properties.ServiceName] = true;
+               // CheckToEnableButton();
+              // We check ToEnableButton using Timer insted
+            }
+        }
+        List<Thread> lstThreadRunning = new List<Thread>();
+        private Boolean HasThreadRunning = false;
+        private void CheckToEnableButton()
+        {
+            /*
+            foreach (String key in DicThreadhasFinished.Keys)
+            {
+                if (DicThreadhasFinished[key] == false)
+                {
+                    return;
+                }
+            }
+            */
+
+            int i;
+            this.Log($"CheckTOEnableButton::No of Thread::{lstThreadRunning.Count }");
+            for (i = 0; i < lstThreadRunning.Count; i++)
+            {
+                if (lstThreadRunning[i].IsAlive)
+                {
+                    this.Log($"CheckTOEnableButton::Thread {i} is Alive");
+                    return;
+                }
+            }
+            this.Log("CheckTOEnableButton::" + " HasFinishedRunning true");
+
+            HasThreadRunning = false;
+            // EnableButton(button7, true);
+            LockControl(false);
+          //  timer1.Enabled = true;
+
+
+        }
+
+        private void LockControl(Boolean IsLock)
+        {
+            Button b = button7;
+
+            if (IsLock)
+            {
+                EnableButton(b, false);
+                EnableListVIew(this.listView1, false);
+            }
+            else
+            {
+                EnableButton(b, true);
+                EnableListVIew(this.listView1, true);
+            }
+
+
+
+        }
+
+        private void EnableListVIew(Extendlistview extV, Boolean IsEnable)
+        {
+            if (extV.InvokeRequired)
+            {
+                EnableListViewCallBack l = new EnableListViewCallBack(EnableListVIew);
+                this.Invoke(l, new object[] { extV, IsEnable });
+            }
+            else
+            {
+                extV.Enabled = IsEnable;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Log("Begin Stop Checked Services");
+            StopCheckedServices();
+            Log("End Stop Checked Services");
+        }
+
+        private void StopCheckedServices()
+        {
+            int i;
+            setCheckedItem();
+            lstThreadRunning = new List<Thread>();
+            foreach (string str in DicService.Keys)
+            {
+                if (!DicService[str].IsChecked)
+                {
+                    continue;
+                }
+                IServiceAdapter service = DicService[str].service;
+                if (ServiceHelper.GetServiceStartMode(str) == enStartMode.Disabled)
+                {
+                    this.Log(str + " start mode is disabled. Programi will skip stopping.");
+                    continue;
+                }
+
+                if (service.Properties.Status != ServiceControllerStatus.Running)
+                {
+                    this.Log(str + " start Status is not Running. Programi will skip stopping.");
+                    continue;
+                }
+                if (!service.Properties.CanStop)
+                {
+                    this.Log(str + " cannot be stopped.");
+                    continue;
+                }
+
+                // this.Log("[StopCheckedService] set IsThereAtLeastOneThreadToJoin = true;");
+                //IsThereAtLeastOneThreadToJoin = true;
+                HasThreadRunning = true;
+                Thread t = new Thread(new ParameterizedThreadStart(StopService));
+
+                t.Name = service.Properties.ServiceName;
+                lstThreadRunning.Add(t);
+                this.Log("[StopCheckedService] add thread into lst ");
+
+                t.Start(service);
+
+                //  t.Join();
+
+
+                //service.Stop();
+            }
+            CheckToEnableButton();
+            //this.DisplayService();
+        }
+
+        private void StopService(object obj)
+        {
+            IServiceAdapter sc = (IServiceAdapter)obj;
+            try
+            {
+                //ServiceController sc = (ServiceController)obj;
+
+                if (sc.Properties.Status != ServiceControllerStatus.Running)
+                {
+                    this.Log(sc.Properties.ServiceName + " service is not running, no need to stop");
+                }
+                UpdateService(sc, "Stopping");
+
+                sc.Stop();
+                //  IsThereAtLeastOneThreadToJoin = true;
+                this.Log(sc.Properties.ServiceName + " stoping");
+                sc.WaitForStatus(ServiceControllerStatus.Stopped);
+                if (sc.Properties.Status == ServiceControllerStatus.Stopped)
+                {
+                    this.Log(sc.Properties.ServiceName + " has stopped");
+                    //DisplayServiceV2();
+                    UpdateService(sc);
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Log("StopService :: Exception :: " + ex.Message);
+            }
+            finally
+            {
+                // DicThreadhasFinished[sc.Properties.ServiceName] = true;
+                CheckToEnableButton();
+            }
         }
     }
 }

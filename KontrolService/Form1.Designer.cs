@@ -50,8 +50,8 @@
             this.button13 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
-            this.listView1 = new KontrolService.Extendlistview();
             this.button15 = new System.Windows.Forms.Button();
+            this.listView1 = new KontrolService.Extendlistview();
             this.SuspendLayout();
             // 
             // button2
@@ -97,7 +97,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(10, 477);
+            this.textBox1.Location = new System.Drawing.Point(3, 431);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
@@ -116,7 +116,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 452);
+            this.label2.Location = new System.Drawing.Point(-1, 406);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 20);
             this.label2.TabIndex = 11;
@@ -242,20 +242,6 @@
             this.button14.UseVisualStyleBackColor = true;
             this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
-            // listView1
-            // 
-            this.listView1.FullRowSelect = true;
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(3, 165);
-            this.listView1.MultiSelect = false;
-            this.listView1.Name = "listView1";
-            this.listView1.OwnerDraw = true;
-            this.listView1.Size = new System.Drawing.Size(1047, 284);
-            this.listView1.TabIndex = 7;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
-            // 
             // button15
             // 
             this.button15.Location = new System.Drawing.Point(1056, 165);
@@ -265,6 +251,20 @@
             this.button15.Text = "Test Using only Main Thread";
             this.button15.UseVisualStyleBackColor = true;
             this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
+            // listView1
+            // 
+            this.listView1.FullRowSelect = true;
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(3, 165);
+            this.listView1.MultiSelect = false;
+            this.listView1.Name = "listView1";
+            this.listView1.OwnerDraw = true;
+            this.listView1.Size = new System.Drawing.Size(1047, 233);
+            this.listView1.TabIndex = 7;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -294,7 +294,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
-            this.Text = "KontrolService";
+            this.Text = "This form is for testing only";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
