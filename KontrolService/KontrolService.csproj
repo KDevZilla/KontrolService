@@ -120,6 +120,7 @@
       <DependentUpon>TestThread.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ServiceUI.cs" />
+    <Compile Include="Util\FileUtil.cs" />
     <Compile Include="XMLSerializer.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -163,7 +164,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="AppInfo\ProjectFiles\TextFile1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

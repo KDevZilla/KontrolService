@@ -34,7 +34,12 @@ namespace KontrolService
         delegate void UpdateListViewStatusCallBack(String strServiceName, String Status);
 
 
+        private void LoadProject(HashSet<String> ServiceSelected)
+        {
+            Pro.LoadService(ServiceSelected);
 
+
+        }
         private void button10_Click(object sender, EventArgs e)
         {
             frmChooseServices f = new frmChooseServices();
@@ -43,12 +48,7 @@ namespace KontrolService
             {
                 return;
             }
-            Pro.LoadService(f.hshServiceSelected);
-
-
-            LoadService(Pro);
-
-            DisplayServiceV2();
+            LoadProject(f.hshServiceSelected);
         }
 
         private void DisplayServiceV2()
@@ -369,6 +369,115 @@ namespace KontrolService
                 this.listView1.Columns.Add("Startup Type", 100, HorizontalAlignment.Left);
             }
 
+        }
+        private void ShowFileNameOnCaption(String fullFilePath)
+        {
+            String onlyFileName = System.IO.Path.GetFileName(fullFilePath).Replace(".prj", "");
+            this.Text = $"ControlService [{onlyFileName}]";
+
+        }
+        private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog opf = new OpenFileDialog();
+            opf.InitialDirectory = Util.FileUtil.ProjectFilesPath;
+            //"Text files (*.txt)|*.
+            opf.Filter = "Project Files (*.prj)|";
+            var dialogueResult = opf.ShowDialog();
+            if (dialogueResult != DialogResult.OK)
+            {
+                return;
+            }
+
+            string fileName = opf.FileName;
+          //  SerializeHelper.SerializeProject(Pro, fileName);
+            Project Pro = null;
+            SerializeHelper.DeserializeProject(ref Pro, fileName);
+            this.Pro = Pro;
+            /*
+            String onlyFileName = System.IO.Path.GetFileName(fileName).Replace(".prj", "");
+            this.Text = $"ControlService [{onlyFileName}]";
+            */
+            this.ProjectFile = fileName;
+            this.ShowFileNameOnCaption(this.ProjectFile);
+            // Pro.LoadService(f.hshServiceSelected);
+
+            LoadService(Pro);
+            DisplayServiceV2();
+            ShowFileNameOnCaption(fileName);
+        }
+
+        private void loadServiceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmChooseServices f = new frmChooseServices();
+            f.ShowDialog();
+            if (!f.HasChooseServiceName)
+            {
+                return;
+            }
+            //LoadProject(f.hshServiceSelected);
+
+            Pro.LoadService(f.hshServiceSelected);
+
+            LoadService(Pro);
+            DisplayServiceV2();
+        }
+        private string ProjectFile { get; set; } = "";
+        private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.ProjectFile.Trim() == "")
+            {
+                SaveFileDialog spf = new SaveFileDialog();
+               // OpenFileDialog opf = new OpenFileDialog();
+                spf.InitialDirectory = Util.FileUtil.ProjectFilesPath;
+                //"Text files (*.txt)|*.
+                spf.Filter = "Project Files (*.prj)|";
+                var dialogueResult = spf.ShowDialog();
+                if (dialogueResult != DialogResult.OK)
+                {
+                    return;
+                }
+
+                string fileName = spf.FileName;
+                this.ProjectFile = fileName;
+            }
+
+            /*
+            this.BackupProject.Name = this.txtProjectName.Text;
+            Util.FileUtil.SaveFile(this.ProjectFile, this.BackupProject.GetXMLDoc());
+            MessageBox.Show($"Project {BackupProject.Name} was saved.");
+            */
+            SerializeHelper.SerializeProject(this.Pro, this.ProjectFile);
+            MessageBox.Show($"Project {this.ProjectFile} was saved.");
+
+            ShowFileNameOnCaption(this.ProjectFile);
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+                SaveFileDialog spf = new SaveFileDialog();
+                // OpenFileDialog opf = new OpenFileDialog();
+                spf.InitialDirectory = Util.FileUtil.ProjectFilesPath;
+                //"Text files (*.txt)|*.
+                spf.Filter = "Project Files (*.prj)|";
+                var dialogueResult = spf.ShowDialog();
+                if (dialogueResult != DialogResult.OK)
+                {
+                    return;
+                }
+                string fileName = spf.FileName;
+                this.ProjectFile = fileName;
+
+
+            /*
+            this.BackupProject.Name = this.txtProjectName.Text;
+            Util.FileUtil.SaveFile(this.ProjectFile, this.BackupProject.GetXMLDoc());
+            MessageBox.Show($"Project {BackupProject.Name} was saved.");
+            */
+            SerializeHelper.SerializeProject(this.Pro, this.ProjectFile);
+            MessageBox.Show($"Project {this.ProjectFile} was saved.");
+
+            ShowFileNameOnCaption(this.ProjectFile);
         }
     }
 }
