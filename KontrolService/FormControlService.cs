@@ -155,12 +155,34 @@ namespace KontrolService
             this.listView1.Items.Add(lstViewItem);
 
         }
+        private void ReLoadServiceStatus()
+        {
+            foreach (ServiceController service in ServiceController.GetServices())
+            {
+                string serviceName = service.ServiceName;
+                string serviceDisplayName = service.DisplayName;
+                string serviceType = service.ServiceType.ToString();
+                string status = service.Status.ToString();
+
+                if(DicService.ContainsKey(serviceName))
+                {
+                    //DicService[serviceName].service.Properties.Status = status;
+                    UpdateListViewStatus(serviceName, status);
+                }
+               
+
+
+               
+
+
+            }
+        }
         private void LoadService(Project pPro)
         {
             ServiceController[] services = ServiceController.GetServices();
 
 
-
+            DicService = new Dictionary<string, cKontrolService>();
             try
             {
                 bool IsUsingMock = false;
@@ -349,6 +371,11 @@ namespace KontrolService
 
         }
         ILog LogObject = null;
+        private void ClearListViewItems()
+        {
+            this.listView1.Items.Clear();
+
+        }
         private void FormControlService_Load(object sender, EventArgs e)
         {
             LogObject = new TxtBoxLog(this.textBox1);
@@ -374,6 +401,16 @@ namespace KontrolService
                 this.listView1.Columns.Add("Startup Type", 100, HorizontalAlignment.Left);
             }
 
+            if(Global.CurrentSetting.CurrentProjectFilePath != "" &&
+              System.IO.File.Exists(Global.CurrentSetting.CurrentProjectFilePath))
+            {
+
+                   
+                   LoadProjectFile(Global.CurrentSetting.CurrentProjectFilePath);
+
+            }
+           
+
         }
         private void ShowFileNameOnCaption(String fullFilePath)
         {
@@ -394,21 +431,31 @@ namespace KontrolService
             }
 
             string fileName = opf.FileName;
+            LoadProjectFile(fileName);
           //  SerializeHelper.SerializeProject(Pro, fileName);
-            Project Pro = null;
-            SerializeHelper.DeserializeProject(ref Pro, fileName);
-            this.Pro = Pro;
-            /*
-            String onlyFileName = System.IO.Path.GetFileName(fileName).Replace(".prj", "");
-            this.Text = $"ControlService [{onlyFileName}]";
-            */
-            this.ProjectFile = fileName;
-            this.ShowFileNameOnCaption(this.ProjectFile);
-            // Pro.LoadService(f.hshServiceSelected);
-
-            LoadService(Pro);
-            DisplayServiceV2();
-            ShowFileNameOnCaption(fileName);
+          
+        }
+        private void LoadProjectFile(String fileName)
+        {
+            try
+            {
+                Project Pro = null;
+                SerializeHelper.DeserializeProject(ref Pro, fileName);
+                this.Pro = Pro;
+                this.ProjectFile = fileName;
+                this.ShowFileNameOnCaption(this.ProjectFile);
+                // Pro.LoadService(f.hshServiceSelected);
+                ClearListViewItems();
+                LoadService(Pro);
+                DisplayServiceV2();
+                ShowFileNameOnCaption(fileName);
+                Global.CurrentSetting.CurrentProjectFilePath = fileName;
+                Global.SaveSetting();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Program has the problem to load file {fileName} \n {ex.ToString ()}");
+            }
         }
 
         private void loadServiceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -513,9 +560,16 @@ namespace KontrolService
 
 
         }
-        private void button7_Click(object sender, EventArgs e)
+        private void EnableActionButton(bool isEnable)
         {
-            EnableButton((Button)sender, false);
+            EnableButton(btnStartService, isEnable);
+            EnableButton(btnStopService, isEnable);
+            EnableButton(btnRestartService, isEnable);
+        }
+        private void btnStartService_Click(object sender, EventArgs e)
+        {
+            EnableActionButton(false);
+           
             Log("Begin Start Checked Services");
 
              setCheckedItem();
@@ -738,12 +792,14 @@ namespace KontrolService
 
             if (IsLock)
             {
-                EnableButton(b, false);
+                //EnableButton(b, false);
+                EnableActionButton(false);
                 EnableListVIew(this.listView1, false);
             }
             else
             {
-                EnableButton(b, true);
+                EnableActionButton(true);
+                //EnableButton(b, true);
                 EnableListVIew(this.listView1, true);
             }
 
@@ -764,8 +820,9 @@ namespace KontrolService
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnStopService_Click(object sender, EventArgs e)
         {
+            EnableActionButton(false);
             Log("Begin Stop Checked Services");
             StopCheckedServices();
             StartTimerEnableButton();
@@ -862,6 +919,7 @@ namespace KontrolService
 
         private void btnRestartService_Click(object sender, EventArgs e)
         {
+            EnableActionButton(false);
             Log("Begin Stop Checked Services");
             RestartCheckedServices();
             StartTimerEnableButton();
@@ -898,6 +956,51 @@ namespace KontrolService
         {
             StopService(obj);
             StartService(obj);
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            Global.CurrentSetting.CurrentProjectFilePath = "";
+            Global.SaveSetting();
+            MessageBox.Show("Current service has been cleared, when you open a new program it will not load the current service");
+
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            NewProject();
+        }
+        private void NewProject()
+        {
+            Global.CurrentSetting.CurrentProjectFilePath = "";
+            Global.SaveSetting();
+
+
+            //Pro.LoadService(new HashSet<string> ());
+
+            this.Pro = new Project("", new HashSet<string>());
+            this.ProjectFile = "";
+            this.ShowFileNameOnCaption(this.ProjectFile);
+
+            ClearListViewItems();
+            LoadService(Pro);
+            DisplayServiceV2();
+        }
+
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            ReLoadServiceStatus();
+            //DisplayServiceV2();
+
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            if(MessageBox.Show ("Do you want to clear the log file ?")!= DialogResult.OK)
+            {
+                return;
+            }
+            this.textBox1.Text = "";
         }
     }
 }

@@ -61,6 +61,7 @@
     <Compile Include="FormControlService.Designer.cs">
       <DependentUpon>FormControlService.cs</DependentUpon>
     </Compile>
+    <Compile Include="Global.cs" />
     <Compile Include="KontrolServiceMachine.cs" />
     <Compile Include="ExtendBackGroundWorker.cs">
       <SubType>Component</SubType>
@@ -113,6 +114,7 @@
     <Compile Include="Services\ServiceAdapter.cs" />
     <Compile Include="Services\IServiceAdapterFactory.cs" />
     <Compile Include="Services\ServiceHelper.cs" />
+    <Compile Include="Setting.cs" />
     <Compile Include="TestThread.cs">
       <SubType>Form</SubType>
     </Compile>

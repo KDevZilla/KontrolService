@@ -23,7 +23,7 @@ namespace KontrolService.Util
       //  public static string SchedulerPath => AppInfoPath + @"\SchedulerFiles\";
        // public static string AppProjectPath => AppInfoPath + @"\ProjectsFiles\";
       //  public static string ProjectExecuteResultPath => AppInfoPath + @"\ProjectsExecuteResultFiles\";
-      //  public static string SettingsPath => AppInfoPath + @"\Settings.bin";
+        public static string SettingsPath => AppInfoPath + @"\Settings.bin";
       //  public static string TempPath => AppInfoPath + @"\Temp\";
       //  public static string LogFilePath => AppInfoPath + @"\log_yyyyMMdd.txt";
         //public static string ProjectPath=> AppInfoPath +@ "

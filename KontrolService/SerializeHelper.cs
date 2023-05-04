@@ -8,6 +8,11 @@ namespace KontrolService
 {
     public class SerializeHelper
     {
+        public static void SerializeSetting(Setting setting, String fileName)
+        {
+            SerializeObject(setting, fileName);
+
+        }
         public static  void SerializeProject(Project Pro,String fileName)
         {
             SerializeObject(Pro, fileName);
@@ -21,15 +26,33 @@ namespace KontrolService
         private static void SerializeObject(object o,String fileName)
         {
 
+
             System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(o.GetType());
-            System.IO.TextWriter txtWriter = new System.IO.StreamWriter(fileName);
-            String XML = XMLSerializer.Serialize(o, null, true);
-            txtWriter.Write(XML);
-            txtWriter.Close();
-            txtWriter.Dispose();
+            using (System.IO.TextWriter txtWriter = new System.IO.StreamWriter(fileName))
+            {
+                String XML = XMLSerializer.Serialize(o, null, true);
+                txtWriter.Write(XML);
+                txtWriter.Close();
+                txtWriter.Dispose();
+            }
+
+             //   String XML = XMLSerializer.Serialize(o, null, true);
+           
 
             //x.Serialize(txtWriter, o);
             
+
+        }
+        public static void DeserializeSetting(ref Setting setting, String fileName)
+        {
+            // DeSerializeObject(ref Pro, fileName);
+            
+            using(System.IO.StreamReader SR = new StreamReader(fileName))
+            {
+                String XML = SR.ReadToEnd();
+                setting = XMLSerializer.Deserialize<Setting>(XML);
+            }
+
 
         }
         public static void DeserializeProject(ref Project Pro, String fileName)
