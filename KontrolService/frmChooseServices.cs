@@ -17,26 +17,15 @@ namespace KontrolService
         {
             InitializeComponent();
         }
-        private HashSet<String> _hshServiceSelected = null;
-        public HashSet<String> hshServiceSelected
-        {
-            get
-            {
-                return _hshServiceSelected;
-            }
-        }
-        Boolean _HasChooseServiceName = false;
-        public Boolean HasChooseServiceName
-        {
-            get
-            {
-                return _HasChooseServiceName;
-            }
-        }
+       
+        public HashSet<String> hshServiceSelected { get; private set; } = null;
+
+        public Boolean HasChooseServiceName { get; private set; } = false;
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
-            _hshServiceSelected = new HashSet<string>();
+            hshServiceSelected = new HashSet<string>();
             int i;
     
             for (i = 0; i < this.listView1.Items.Count  ; i++)
@@ -45,9 +34,9 @@ namespace KontrolService
                 {
                     continue;
                 }
-                _hshServiceSelected.Add(this.listView1.Items [i].SubItems[NameColOrder].Text);
+                hshServiceSelected.Add(this.listView1.Items [i].SubItems[NameColOrder].Text);
             }
-            _HasChooseServiceName = true;
+            HasChooseServiceName = true;
             this.Close();
 
         }
@@ -59,7 +48,7 @@ namespace KontrolService
             lstViewItem.Name = serviceName;
             lstViewItem.SubItems.Add(serviceName);
             lstViewItem.SubItems.Add(serviceDisplayName);
-           // lstViewItem.SubItems.Add(StartupType);
+
             this.listView1.Items.Add(lstViewItem);
 
         }
@@ -73,8 +62,7 @@ namespace KontrolService
             this.listView1.Columns.Add("#", 20, HorizontalAlignment.Left);
             this.listView1.Columns.Add("Name", 300, HorizontalAlignment.Left);
             this.listView1.Columns.Add("Display Name", 500, HorizontalAlignment.Left);
-         //   this.listView1.Columns.Add("Status", 100, HorizontalAlignment.Left);
-         //   this.listView1.Columns.Add("Startup Type", 100, HorizontalAlignment.Left);
+
 
             ServiceController[] services = ServiceController.GetServices();
 
@@ -128,24 +116,20 @@ namespace KontrolService
         }
         private void PerformSearch(String Criteria)
         {
-           // this.listView1.Focus();
+
             Criteria = Criteria.ToLower();
-            int itemIndex = 0;
-            // DeselectLastItem();
+
             Boolean CanfindItem = false;
             for(int i=NextIndex +1;i<listView1.Items.Count;i++)
             {
                 ListViewItem item = listView1.Items[i];
-               // itemIndex++;
-                //Selected = true, won't show until the listview has focus, but setting it to true puts it in the 
-                //SelectedItems collection.
                 Boolean IsMatchNameOrDisplayName = false;
                 IsMatchNameOrDisplayName = IsMatchNameOrDisplayName || item.SubItems[DisplayNameColOrder].Text.ToLower().IndexOf (Criteria) > -1;
                 IsMatchNameOrDisplayName = IsMatchNameOrDisplayName || item.SubItems[NameColOrder].Text.ToLower().IndexOf (Criteria) > -1;
 
                 if (IsMatchNameOrDisplayName)
                 {
-                    //item.Selected = true;
+
                     SelectItem(i);
                     CanfindItem = true;
                     break;
@@ -179,7 +163,7 @@ namespace KontrolService
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            _HasChooseServiceName = false;
+            HasChooseServiceName = false;
             this.Close();
 
         }

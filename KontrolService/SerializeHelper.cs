@@ -36,16 +36,12 @@ namespace KontrolService
                 txtWriter.Dispose();
             }
 
-             //   String XML = XMLSerializer.Serialize(o, null, true);
-           
-
-            //x.Serialize(txtWriter, o);
             
 
         }
         public static void DeserializeSetting(ref Setting setting, String fileName)
         {
-            // DeSerializeObject(ref Pro, fileName);
+           
             
             using(System.IO.StreamReader SR = new StreamReader(fileName))
             {
@@ -57,7 +53,7 @@ namespace KontrolService
         }
         public static void DeserializeProject(ref Project Pro, String fileName)
         {
-           // DeSerializeObject(ref Pro, fileName);
+
             System.IO.StreamReader SR = new StreamReader(fileName);
             String XML = SR.ReadToEnd();
             Pro = XMLSerializer.Deserialize<Project>(XML);
