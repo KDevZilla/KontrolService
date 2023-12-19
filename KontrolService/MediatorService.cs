@@ -8,20 +8,10 @@ namespace KontrolService
    // public delegate void setCheckedItemEventHandler(object sender, List<String> lst);
     public class MediatorService
     {
-        private KontrolServiceUI _ServiceUIObj = null;
+        
         private KontrolServiceMachine con = new KontrolServiceMachine();
 
-        public KontrolServiceUI ServiceUIObj
-        {
-            get
-            {
-                return _ServiceUIObj;
-            }
-            set
-            {
-                _ServiceUIObj = value;
-            }
-        }
+        public KontrolServiceUI ServiceUIObj { get; set; } = null;
         public void Initial()
         {
             con.UpdateProgressEvent += Con_UpdateProgressEvent;
@@ -38,7 +28,7 @@ namespace KontrolService
         private void Con_UpdateServiceEvent(KontrolServiceMachine sender, string ServiceName, string Status)
         {
             // throw new NotImplementedException();
-            _ServiceUIObj.UpdateServiceStatustoUI(ServiceName, Status);
+            ServiceUIObj.UpdateServiceStatustoUI(ServiceName, Status);
 
         }
 
@@ -50,7 +40,7 @@ namespace KontrolService
 
         public void UpdateServiceStatustoUI(String strServiceName, String Status)
         {
-            _ServiceUIObj.UpdateServiceStatustoUI(strServiceName , Status);
+            ServiceUIObj.UpdateServiceStatustoUI(strServiceName , Status);
 
         }
         public void setCheckItems(List<String> lst)

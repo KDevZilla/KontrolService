@@ -56,5 +56,10 @@ namespace KontrolService
 
             demoWatcher.Stop();
         }
+
+        private void frmTestService_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

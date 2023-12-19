@@ -52,15 +52,16 @@
             // 
             // frmTestService
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1244, 653);
+            this.ClientSize = new System.Drawing.Size(1098, 653);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "frmTestService";
             this.Text = "frmTestService";
+            this.Load += new System.EventHandler(this.frmTestService_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
