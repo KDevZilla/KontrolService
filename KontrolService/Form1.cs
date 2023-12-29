@@ -1268,33 +1268,14 @@ namespace KontrolService
 
         private void btnSaveProject_Click(object sender, EventArgs e)
         {
-            /*
-            DialogResult saveDiaResult = saveFileDialog1.ShowDialog();
-            if(saveDiaResult != DialogResult.OK )
-            {
-                return;
-            }
-            string fileName = saveFileDialog1.FileName;
-            */
-            string fileName = @"D:\Temp\2021_11_02\Test123.xml";
-            SerializeHelper.SerializeProject(Pro, fileName);
-           // XMLSerializer.Serialize(Pro, fileName);
-
-            /*
-            System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(Pro.GetType());
-            System.IO.TextWriter txtWriter = new System.IO.StreamWriter(fileName);
-            x.Serialize(txtWriter, Pro);
-            */
+           
 
 
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-          SerializeHelper.DeserializeProject(ref Pro, @"D:\Temp\2021\2021_11_02\Test123.xml");
-            LoadService(Pro);
-
-            DisplayServiceV2();
+         
         }
 
         private void button12_Click(object sender, EventArgs e)
