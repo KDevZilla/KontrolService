@@ -125,9 +125,10 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.label2);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmHowToRunAppAsAdmin";
-            this.Text = "frmHowToRunAppAsAdmin";
+            this.Text = "How To Run App As Admin";
             this.Load += new System.EventHandler(this.frmHowToRunAppAsAdmin_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBoxNeedtoRunVSAsAdmin)).EndInit();
